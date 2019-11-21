@@ -1,15 +1,13 @@
 package com.events.controller
 
-import com.events.mod.helloModule
-import com.events.service.HelloService
+import com.events.mod.appModule
+import com.events.service.EventService
 import io.ktor.application.Application
 import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.features.CallLogging
 import io.ktor.features.DefaultHeaders
-import io.ktor.http.HttpStatusCode
 import io.ktor.request.*
-import io.ktor.response.respond
 import io.ktor.response.respondText
 import io.ktor.routing.get
 import io.ktor.routing.post
@@ -21,19 +19,23 @@ fun Application.main() {
     install(DefaultHeaders)
     install(CallLogging)
     install(Koin) {
-        modules(helloModule)
+        modules(appModule)
     }
 
-    val service by inject<HelloService>()
+    val service by inject<EventService>()
 
     routing {
         get ("/issues/{idIssue}/events"){
             val idIssue = call.parameters["idIssue"]
             if (idIssue != null){
-                service.recuperarEventPeloIssue(idIssue.toInt())
-                call.respondText { "HELLo" }
-            }
+                var event = service.recuperarEventPeloIssue(idIssue.toInt())
+                if (event != null){
+                    call.respondText{"Action do evento ${event} ${idIssue}"}
+                }else {
+                    call.respondText{"Issue ${idIssue} não encontrado"}
+                }
 
+            }
         }
         post("/events") {
             val valores = call.receiveParameters()["payload"]

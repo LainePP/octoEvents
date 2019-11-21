@@ -3,7 +3,6 @@ package models
 import com.google.gson.JsonObject
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.Table
-import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.insertIgnore
 
 object Issue : Table("issue") {

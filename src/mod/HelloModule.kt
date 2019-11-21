@@ -1,12 +1,10 @@
 package com.events.mod
 
-import com.events.repository.HelloRepository
-import com.events.service.HelloService
-import com.events.service.HelloServiceImpl
+import com.events.service.EventService
+import com.events.service.EventServiceImpl
 import org.koin.dsl.module
 import org.koin.experimental.builder.singleBy
 
-val helloModule = module (){
-    singleBy<HelloService, HelloServiceImpl>()
-    single { HelloRepository() }
+val appModule = module (){
+    singleBy<EventService, EventServiceImpl>()
 }

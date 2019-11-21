@@ -1,30 +1,33 @@
 package com.events.service
 
-import com.events.repository.HelloRepository
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import models.*
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 
-interface HelloService {
-    fun sayHello(): String
+interface EventService {
     fun salvarEvento(evento: String) : Int
-    fun recuperarEventPeloIssue(idIssue: Int)
+    fun recuperarEventPeloIssue(idIssue: Int): String?
 
 }
 
-class HelloServiceImpl(private val helloRepository: HelloRepository):HelloService {
-    override fun recuperarEventPeloIssue(idIssue: Int){
+class EventServiceImpl(): EventService {
+    override fun recuperarEventPeloIssue(idIssue: Int): String? {
+        var event = listOf<String>()
         transaction {
-            var issue = Issue
+            event = Issue
                 .innerJoin(Event)
                 .innerJoin(Repository)
                 .innerJoin(Comment)
+                .slice(Event.action, Issue.url, Repository.name, Comment.issue_url)
                 .select{ Issue.id eq idIssue }
-            print(issue)
+                .map { it[Event.action] }
         }
-        return listOf(issue)
+        if (event.size > 0){
+            return event.get(0)
+        }
+        return null
     }
 
     override fun salvarEvento(evento: String): Int {
@@ -50,9 +53,5 @@ class HelloServiceImpl(private val helloRepository: HelloRepository):HelloServic
             commit()
         }
         return idEvento
-    }
-
-    override fun sayHello(): String {
-        return "Hello ${helloRepository.getHello()}"
     }
 }

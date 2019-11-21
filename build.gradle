@@ -54,5 +54,6 @@ dependencies {
     compile "com.h2database:h2:1.4.200"
 
     testCompile "io.ktor:ktor-server-tests:$ktor_version"
-
+    testCompile "org.koin:koin-test:2.0.0"
+    testCompile "io.ktor:ktor-server-test-host:$ktor_version"
 }
